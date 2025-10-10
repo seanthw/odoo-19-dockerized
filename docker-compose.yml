@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  postgres-REDACTED-test:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=REDACTED_test
+      - POSTGRES_PASSWORD=REDACTED_test
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - REDACTED-test-network
+
+  REDACTED-test:
+    image: REDACTED:19.0
+    depends_on:
+      - postgres-REDACTED-test
+    environment:
+      - HOST=postgres-REDACTED-test
+      - USER=REDACTED_test
+      - PASSWORD=REDACTED_test
+    ports:
+      - "8070:8069"
+    volumes:
+      - REDACTED-test-data:/var/lib/REDACTED
+      - ./test-addons:/mnt/extra-addons
+    networks:
+      - REDACTED-test-network
+
+volumes:
+  postgres-test-data:
+  REDACTED-test-data:
+
+networks:
+  REDACTED-test-network:

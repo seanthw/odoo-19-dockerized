@@ -1,0 +1,25 @@
+# Docker
+docker-compose.override.yml
+.env
+
+# Data volumes (don't commit database data!)
+data/
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/

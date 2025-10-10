@@ -1,3 +1,5 @@
+# This docker-compose.yml file is used to set up a local development environment for Odoo 19.
+# It includes a PostgreSQL database and an Odoo instance with custom addons.
 version: "3.8"
 services:
   postgres-REDACTED-test:

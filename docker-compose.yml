@@ -2,38 +2,38 @@
 # It includes a PostgreSQL database and an Odoo instance with custom addons.
 version: "3.8"
 services:
-  postgres-REDACTED-test:
+  postgres-REDACTED-19:
     image: postgres:16
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_USER=REDACTED_test
-      - POSTGRES_PASSWORD=REDACTED_test
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - postgres-test-data:/var/lib/postgresql/data
+      - postgres-REDACTED-19-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
-      - REDACTED-test-network
+      - REDACTED-19-network
 
-  REDACTED-test:
+  REDACTED-19:
     image: REDACTED:19.0
     depends_on:
-      - postgres-REDACTED-test
+      - postgres-REDACTED-19
     environment:
-      - HOST=postgres-REDACTED-test
-      - USER=REDACTED_test
-      - PASSWORD=REDACTED_test
+      - HOST=postgres-REDACTED-19
+      - USER=${POSTGRES_USER}
+      - PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "8070:8069"
     volumes:
-      - REDACTED-test-data:/var/lib/REDACTED
+      - REDACTED-19-data:/var/lib/REDACTED
       - ./test-addons:/mnt/extra-addons
     networks:
-      - REDACTED-test-network
+      - REDACTED-19-network
 
 volumes:
-  postgres-test-data:
-  REDACTED-test-data:
+  postgres-REDACTED-19-data:
+  REDACTED-19-data:
 
 networks:
-  REDACTED-test-network:
+  REDACTED-19-network:

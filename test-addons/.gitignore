@@ -1,0 +1,4 @@
+# Ignore all files and directories in this folder...
+*
+# ...except for this .gitignore file itself.
+!.gitignore

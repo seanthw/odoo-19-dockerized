@@ -25,59 +25,32 @@ docker compose ps
 # View logs
 docker compose logs -f odoo-19
 
-## Custom Addons
+## How to Add Custom Modules
 
-The Odoo container runs as a specific user (`odoo`, UID `100`) which needs read permission for your custom addon files. If the permissions are incorrect, Odoo will silently fail to load the module, and it will not appear in the Apps List.
+Follow these steps to add any custom module to this Odoo environment.
 
-There are two methods to add your modules:
-
-### Method 1: Symbolic Link (Recommended for Development)
-
-This method is ideal for development as it allows you to edit your module in its own directory, and the changes are immediately available to Odoo upon restarting the container.
-
-1.  **Create a Symbolic Link:**
-    Link your module's source directory into the `test-addons` folder.
+1.  **Copy the Module:**
+    Place your custom module's folder into the `test-addons` directory.
     ```bash
-    ln -s /path/to/your/odoo-module ./test-addons/
-    ```
-
-2.  **Fix Permissions:**
-    The Odoo container runs as a user with ID `100`. To grant it access without breaking your own `git` permissions, you need to change the directory's group owner to `100` and grant group write permissions.
-
-    Replace `your_user` with your actual username on your machine.
-    ```bash
-    sudo chown -R your_user:100 /path/to/your/odoo-module
-    sudo chmod -R 775 /path/to/your/odoo-module
-    ```
-    This ensures you remain the owner while allowing the Odoo container's user (which is in group `100`) to access the files.
-
-### Method 2: Copying Files
-
-Use this method if you prefer to keep a separate copy of the module for this specific Odoo instance.
-
-1.  **Copy the Directory:**
-    Copy your module directory into the `test-addons` folder.
-    ```bash
+    # Example:
     cp -r /path/to/your/odoo-module ./test-addons/
     ```
 
-2.  **Fix Permissions:**
-    Change the ownership of the **copied** module directory to the Odoo user.
+2.  **Restart the Odoo Container:**
+    This is a critical step. Restarting the container will make Odoo aware of the new module and, more importantly, it will automatically set the correct file ownership and permissions inside the container.
     ```bash
-    sudo chown -R 100:100 ./test-addons/your-odoo-module
+    docker compose restart odoo-19
     ```
 
-### Final Steps (For Both Methods)
+3.  **Update the Apps List:**
+    Once the container has restarted, log into your Odoo instance.
+    - Go to the **Settings** menu and click **Activate the developer mode**.
+    - Go to the **Apps** menu.
+    - Click the **Update Apps List** button in the top menu.
+    - Confirm the update in the dialog box.
 
-After adding your module using either method, you must restart the containers and update the apps list.
-
-1.  **Restart the environment:**
-    ```bash
-    docker compose restart
-    ```
-
-2.  **Update Apps List in Odoo:**
-    In the Odoo UI, go to **Apps**, click on **Update Apps List**, remove the default "Apps" filter, and search for your module.
+4.  **Install the Module:**
+    Your module will now be visible. You can search for it by name and click **Install**. (Remember to remove the default "Apps" filter in the search bar to see all available modules).
 
 ## Configuration
 

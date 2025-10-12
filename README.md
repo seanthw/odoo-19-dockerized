@@ -42,10 +42,14 @@ This method is ideal for development as it allows you to edit your module in its
     ```
 
 2.  **Fix Permissions:**
-    Change the ownership of your **original** module directory to match the Odoo user.
+    The Odoo container runs as a user with ID `100`. To grant it access without breaking your own `git` permissions, you need to change the directory's group owner to `100` and grant group write permissions.
+
+    Replace `your_user` with your actual username on your machine.
     ```bash
-    sudo chown -R 100:100 /path/to/your/odoo-module
+    sudo chown -R your_user:100 /path/to/your/odoo-module
+    sudo chmod -R 775 /path/to/your/odoo-module
     ```
+    This ensures you remain the owner while allowing the Odoo container's user (which is in group `100`) to access the files.
 
 ### Method 2: Copying Files
 
@@ -58,7 +62,7 @@ Use this method if you prefer to keep a separate copy of the module for this spe
     ```
 
 2.  **Fix Permissions:**
-    Change the ownership of the **copied** module directory.
+    Change the ownership of the **copied** module directory to the Odoo user.
     ```bash
     sudo chown -R 100:100 ./test-addons/your-odoo-module
     ```

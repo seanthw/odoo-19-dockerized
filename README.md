@@ -25,33 +25,26 @@ docker compose ps
 # View logs
 docker compose logs -f odoo-19
 
-## How to Add Custom Modules
+## Adding Custom Modules
 
-Follow these steps to add any custom module to this Odoo environment.
+1. Place your module in the `custom-addons/` directory
+2. Restart Odoo: `docker compose restart odoo-app`
+3. Update apps list in Odoo interface and a bit more # 1. Go to your repo
+cd ~/odoo-19-dockerized
 
-1.  **Copy the Module:**
-    Place your custom module's folder into the `test-addons` directory.
-    ```bash
-    # Example:
-    cp -r /path/to/your/odoo-module ./test-addons/
-    ```
+# 2. Check what's here
+ls -la
 
-2.  **Restart the Odoo Container:**
-    This is a critical step. Restarting the container will make Odoo aware of the new module and, more importantly, it will automatically set the correct file ownership and permissions inside the container.
-    ```bash
-    docker compose restart odoo-19
-    ```
+# You should see:
+# - docker-compose.yml
+# - custom-addons/  ← If it's missing, create it!
 
-3.  **Update the Apps List:**
-    Once the container has restarted, log into your Odoo instance.
-    - Go to the **Settings** menu and click **Activate the developer mode**.
-    - Go to the **Apps** menu.
-    - Click the **Update Apps List** button in the top menu.
-    - Confirm the update in the dialog box.
+# 3. If missing, create it
+mkdir -p custom-addons
 
-4.  **Install the Module:**
-    Your module will now be visible. You can search for it by name and click **Install**. (Remember to remove the default "Apps" filter in the search bar to see all available modules).
-
+# 4. Verify the path matches
+realpath custom-addons
+# Should show: /home/sean/odoo-19-dockerized/custom-addons
 ## Configuration
 
 You can customize the environment by creating a `.env` file in the root of the project. Copy the `.env.example` file to get started:
@@ -62,12 +55,30 @@ cp .env.example .env
 
 Then, modify the `.env` file with your desired credentials.
 
-### PostgreSQL
+# Database Configuration
+POSTGRES_DB=odoo_prod
+POSTGRES_USER=odoo_admin
+POSTGRES_PASSWORD=YourStrongPasswordHere
 
-*   `image`: You can change the PostgreSQL version by modifying the `image` tag in `docker-compose.yml` (e.g., `postgres:15`).
-*   `ports`: The host port mapped to the container's port 5432. By default, it is `5433:5432`.
+# Odoo Configuration
+ODOO_VERSION=19.0
+ODOO_PORT=8070
+ODOO_ADMIN_PASSWORD=admin
 
-### Odoo
+# Paths
+ADDONS_PATH=./custom-addons
 
-*   `image`: You can change the Odoo version by modifying the `image` tag in `docker-compose.yml` (e.g., `odoo:18.0`).
-*   `ports`: The host port mapped to the container's port 8069. By default, it is `8070:8069`.
+## Directory Structure
+
+- `custom-addons/` - Place your custom Odoo modules here
+- `docker-compose.yml` - Main compose file with persistent volumes
+- `.env` - Environment configuration
+
+## Persistent Volumes
+
+The setup creates three named volumes:
+
+- `odoo-postgres-data` - PostgreSQL database files
+- `odoo-app-data` - Odoo session and data files
+- `odoo-app-config` - Odoo configuration files
+

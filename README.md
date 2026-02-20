@@ -87,29 +87,28 @@ This setup can run on a Raspberry Pi 3 to 4. It has been tested on a Raspberry P
 
 ## Configuration
 
-You can customize your setup by creating a `.env` file in the project root. An example is provided, which you can use as a template.
+You can customize your setup by creating a `.env` file in the project root. This file will be automatically loaded by Docker Compose.
 
-1.  Create your own environment file:
+1.  Create a `.env` file in the root of your project:
     ```bash
-    cp .env.example .env
+    touch .env
     ```
 
-2.  Edit the `.env` file to set your desired values.
+2.  Edit the `.env` file and add your desired configurations. Here's an example:
 
     ```dotenv
-    # Database Configuration
-    POSTGRES_DB=odoo_prod
-    POSTGRES_USER=odoo_admin
-    POSTGRES_PASSWORD=YourStrongPasswordHere
-
     # Odoo Configuration
     ODOO_VERSION=19.0
     ODOO_PORT=8070
     ODOO_ADMIN_PASSWORD=admin
 
-    # Paths
-    ADDONS_PATH=./custom-addons
+    # PostgreSQL Configuration (used by Odoo to connect to the database)
+    POSTGRES_DB=odoo_prod
+    POSTGRES_USER=odoo
+    POSTGRES_PASSWORD=odoo
     ```
+
+    **Note:** The `POSTGRES_USER` and `POSTGRES_PASSWORD` values in the `.env` file should match the `environment` variables set for the `postgres` service in `docker-compose.yml` if you intend to change them. The `HOST`, `USER`, and `PASSWORD` variables within the Odoo service in `docker-compose.yml` are currently hardcoded to `postgres` and `odoo` respectively.
 
 ## Data Persistence
 

@@ -28,8 +28,9 @@ services:
       - USER=${POSTGRES_USER:-odoo}
       - PASSWORD=${POSTGRES_PASSWORD:-odoo}
       - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
-      - DATABASE=${ODOO_DATABASE:-odoo_prod}
+      - DB_NAME=${ODOO_DATABASE:-odoo_prod}
       - ADDONS_PATH=/mnt/extra-addons
+    command: odoo -d ${ODOO_DATABASE:-odoo_prod}
     volumes:
       - ${ADDONS_PATH:-./custom-addons}:/mnt/extra-addons
       - odoo-data:/var/lib/odoo

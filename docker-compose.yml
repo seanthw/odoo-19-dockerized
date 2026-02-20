@@ -27,6 +27,7 @@ services:
       - USER=odoo
       - PASSWORD=odoo
       - ADDONS_PATH=/mnt/extra-addons
+    command: odoo -d odoo_prod
     volumes:
       - ${ADDONS_PATH:-./custom-addons}:/mnt/extra-addons
       - odoo-data:/var/lib/odoo

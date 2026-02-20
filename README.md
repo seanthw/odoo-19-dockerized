@@ -1,84 +1,120 @@
 # Odoo 19 Dockerized
 
-Isolated Odoo 19 Docker environment for testing and development.
+A clean, isolated Odoo 19 Docker environment designed for rapid development and testing.
+
+## Features
+
+-   **Isolated Environment:** Runs Odoo 19 and PostgreSQL in separate Docker containers.
+-   **Persistent Data:** Uses named volumes to persist your database, Odoo data, and configuration.
+-   **Customizable:** Easily add your own modules and customize configurations.
+-   **Raspberry Pi Ready:** Tested and compatible with Raspberry Pi 4.
+
+## Prerequisites
+
+Make sure you have the following installed on your system:
+
+-   [Docker](https://docs.docker.com/get-docker/)
+-   [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Quick Start
 
-```bash
-git clone git@github.com:seanthw/odoo-19-dockerized.git
-cd odoo-19-dockerized
-docker compose up -d
-```
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/seanthw/odoo-19-dockerized.git
+    cd odoo-19-dockerized
+    ```
 
-## Management
+2.  Start the services:
+    ```bash
+    docker compose up -d
+    ```
 
-**After that, use:**
-# Stop
-docker compose down
+Odoo will be available at `http://localhost:8070`.
 
-# Start again  
-docker compose up -d
+## Usage
 
-# Check status
-docker compose ps
+Here are the basic commands to manage your Docker environment:
 
-# View logs
-docker compose logs -f odoo-19
+-   **Start the services:**
+    ```bash
+    docker compose up -d
+    ```
+
+-   **Stop the services:**
+    ```bash
+    docker compose down
+    ```
+
+-   **Check container status:**
+    ```bash
+    docker compose ps
+    ```
+
+-   **View Odoo logs:**
+    ```bash
+    docker compose logs -f odoo-19
+    ```
+
+-   **Restart a service (e.g., Odoo):**
+    ```bash
+    docker compose restart odoo-app
+    ```
 
 ## Adding Custom Modules
 
-1. Place your module in the `custom-addons/` directory
-2. Restart Odoo: `docker compose restart odoo-app`
-3. Update apps list in Odoo interface and a bit more # 1. Go to your repo
-cd ~/odoo-19-dockerized
+1.  Place your custom Odoo module(s) inside the `custom-addons/` directory. If the directory doesn't exist, create it:
+    ```bash
+    mkdir -p custom-addons
+    ```
 
-# 2. Check what's here
-ls -la
+2.  Ensure your module is in the correct path, for example:
+    `/home/sean/odoo-19-dockerized/custom-addons/your_module`
 
-# You should see:
-# - docker-compose.yml
-# - custom-addons/  ← If it's missing, create it!
+3.  Restart the Odoo container to mount the new module:
+    ```bash
+    docker compose restart odoo-app
+    ```
 
-# 3. If missing, create it
-mkdir -p custom-addons
+4.  Log in to Odoo, go to **Apps**, and select **Update Apps List** from the menu (you may need to activate developer mode). Your new module should now be available for installation.
 
-# 4. Verify the path matches
-realpath custom-addons
-# Should show: /home/sean/odoo-19-dockerized/custom-addons
+## Raspberry Pi Compatibility
+
+This setup can run on a Raspberry Pi 3 to 4. It has been tested on a Raspberry Pi 4 with the following key specifications:
+
+-   **Model:** Raspberry Pi 4B rev 1.2
+-   **RAM:** 4GB
+-   **SoC:** BCM2711
+
 ## Configuration
 
-You can customize the environment by creating a `.env` file in the root of the project. Copy the `.env.example` file to get started:
+You can customize your setup by creating a `.env` file in the project root. An example is provided, which you can use as a template.
 
-```bash
-cp .env.example .env
-```
+1.  Create your own environment file:
+    ```bash
+    cp .env.example .env
+    ```
 
-Then, modify the `.env` file with your desired credentials.
+2.  Edit the `.env` file to set your desired values.
 
-# Database Configuration
-POSTGRES_DB=odoo_prod
-POSTGRES_USER=odoo_admin
-POSTGRES_PASSWORD=YourStrongPasswordHere
+    ```dotenv
+    # Database Configuration
+    POSTGRES_DB=odoo_prod
+    POSTGRES_USER=odoo_admin
+    POSTGRES_PASSWORD=YourStrongPasswordHere
 
-# Odoo Configuration
-ODOO_VERSION=19.0
-ODOO_PORT=8070
-ODOO_ADMIN_PASSWORD=admin
+    # Odoo Configuration
+    ODOO_VERSION=19.0
+    ODOO_PORT=8070
+    ODOO_ADMIN_PASSWORD=admin
 
-# Paths
-ADDONS_PATH=./custom-addons
+    # Paths
+    ADDONS_PATH=./custom-addons
+    ```
 
-## Directory Structure
+## Data Persistence
 
-- `custom-addons/` - Place your custom Odoo modules here
-- `docker-compose.yml` - Main compose file with persistent volumes
-- `.env` - Environment configuration
+The setup creates three named Docker volumes to ensure your data is not lost when containers are stopped or removed:
 
-## Persistent Volumes
-
-The setup creates three named volumes:
-
-- `odoo-postgres-data` - PostgreSQL database files
-- `odoo-app-data` - Odoo session and data files
-- `odoo-app-config` - Odoo configuration files
-
+-   `odoo-postgres-data`: Stores PostgreSQL database files.
+-   `odoo-app-data`: Stores Odoo session data and file storage.
+-   `odoo-app-config`: Stores Odoo configuration files.

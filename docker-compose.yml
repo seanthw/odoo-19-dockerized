@@ -5,9 +5,8 @@ services:
     image: postgres:16
     container_name: odoo-postgres
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-odoo_prod}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-odoo}
-      - POSTGRES_USER=${POSTGRES_USER:-odoo}
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
     ports:
       - "5433:5432"
     volumes:
@@ -25,9 +24,8 @@ services:
       - "${ODOO_PORT:-8070}:8069"
     environment:
       - HOST=postgres
-      - USER=${POSTGRES_USER:-odoo}
-      - PASSWORD=${POSTGRES_PASSWORD:-odoo}
-      - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
+      - USER=odoo
+      - PASSWORD=odoo
       - ADDONS_PATH=/mnt/extra-addons
     volumes:
       - ${ADDONS_PATH:-./custom-addons}:/mnt/extra-addons

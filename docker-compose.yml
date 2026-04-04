@@ -1,50 +1,40 @@
 # This docker-compose.yml file is used to set up a local development environment for Odoo 19.
 # It includes a PostgreSQL database and an Odoo instance with custom addons.
 services:
-  postgres:
+  postgres-odoo-19:
     image: postgres:16
-    container_name: odoo-postgres
     environment:
-      - POSTGRES_PASSWORD=odoo
-      - POSTGRES_USER=odoo
-    ports:
-      - "5433:5432"
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - postgres-odoo-19-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
     networks:
-      - odoo-network
+      - odoo-19-network
+    restart: unless-stopped
 
   odoo-19:
-    image: odoo:${ODOO_VERSION:-19.0}
-    container_name: odoo-app
+    build: .
     depends_on:
-      - postgres
-    ports:
-      - "${ODOO_PORT:-8070}:8069"
+      - postgres-odoo-19
     environment:
-      - HOST=postgres
-      - USER=odoo
-      - PASSWORD=odoo
-      - ADDONS_PATH=/mnt/extra-addons
-    command: odoo -d odoo_prod
+      - HOST=postgres-odoo-19
+      - USER=${POSTGRES_USER}
+      - PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "8069:8069"
     volumes:
-      - ${ADDONS_PATH:-./custom-addons}:/mnt/extra-addons
-      - odoo-data:/var/lib/odoo
-      - odoo-config:/etc/odoo
-    restart: unless-stopped
+      - odoo-19-data:/var/lib/odoo
+      - ./extra-addons:/mnt/extra-addons
     networks:
-      - odoo-network
+      - odoo-19-network
+    restart: unless-stopped
 
 volumes:
-  postgres-data:
-    name: odoo-postgres-data
-  odoo-data:
-    name: odoo-app-data
-  odoo-config:
-    name: odoo-app-config
+  postgres-odoo-19-data:
+  odoo-19-data:
 
 networks:
-  odoo-network:
-    name: odoo-network
-    driver: bridge
+  odoo-19-network:
